@@ -47,6 +47,15 @@ func main() {
 
 	})
 
+	app.Delete("/books/:id", func(c *fiber.Ctx) error {
+		id, err := strconv.Atoi(c.Params("id"))
+		if err != nil || id < 1 || id > len(books) {
+			return c.Status(404).JSON(fiber.Map{"error": "Book not found!"})
+		}
+		books = append(books[:id-1], books[id:]...)
+		return c.Status(204).Send(nil)
+	})
+
 	app.Delete("/books", func(c *fiber.Ctx) error {
 		books = nil
 		return c.Status(204).Send(nil)
