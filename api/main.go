@@ -36,6 +36,11 @@ func main() {
 
 	})
 
+	app.Delete("/books", func(c *fiber.Ctx) error {
+		books = nil
+		return c.Status(204).Send(nil)
+	})
+
 	if err := app.Listen(":8080"); err != nil {
 		panic(err)
 	}
