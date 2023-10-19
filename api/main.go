@@ -1,6 +1,8 @@
 package main
 
 import (
+	"strconv"
+
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -22,6 +24,15 @@ func main() {
 
 	app.Get("/books", func(c *fiber.Ctx) error {
 		return c.JSON(books)
+	})
+
+	app.Get("/books/:id", func(c *fiber.Ctx) error {
+		id, err := strconv.Atoi(c.Params("id"))
+		if err != nil || id < 1 || id > len(books) {
+			return c.Status(404).JSON(fiber.Map{"error": "Book does not exist!"})
+		}
+		id -= 1 // not good practice
+		return c.JSON(books[id])
 	})
 
 	app.Post("/books", func(c *fiber.Ctx) error {
