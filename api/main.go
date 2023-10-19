@@ -24,6 +24,18 @@ func main() {
 		return c.JSON(books)
 	})
 
+	app.Post("/books", func(c *fiber.Ctx) error {
+		var newBook Book
+		if err := c.BodyParser(&newBook); err != nil {
+			return c.Status(400).JSON(fiber.Map{"error": err.Error()})
+		}
+
+		newBook.ID = len(books) + 1
+		books = append(books, newBook)
+		return c.Status(201).JSON(newBook)
+
+	})
+
 	if err := app.Listen(":8080"); err != nil {
 		panic(err)
 	}
